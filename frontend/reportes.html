@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reportes - Control de Asistencia</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .reportes-wrap { padding: 20px; }
+        .panel { background: #fff; border-radius: 12px; padding: 20px; margin-bottom: 20px; box-shadow: 0 3px 10px rgba(0,0,0,.08); }
+        .panel h2 { margin: 0 0 14px; color: #2c3e50; }
+        .filtros { display: flex; gap: 12px; flex-wrap: wrap; align-items: end; }
+        .filtros .group { min-width: 180px; flex: 1; }
+        .filtros label { display: block; font-weight: 600; margin-bottom: 6px; }
+        .filtros input, .filtros select { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ccc; }
+        .btn { border: none; border-radius: 8px; padding: 10px 14px; cursor: pointer; }
+        .btn-filtrar { background: #667eea; color: #fff; }
+        .btn-pdf { background: #28a745; color: #fff; }
+        .btn:disabled { opacity: .6; cursor: not-allowed; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border-bottom: 1px solid #eee; padding: 10px; text-align: left; }
+        th { background: #f7f8fb; }
+        .chip-tarde { display: inline-block; background: #f8d7da; color: #721c24; border-radius: 12px; padding: 4px 8px; font-size: 12px; font-weight: 600; }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <img src="images/escudo.png" alt="Escudo" class="sidebar-logo">
+                <h2>Institución Educativa Nuestra Señora de Chiquinquirá</h2>
+                <p>Control de Asistencia</p>
+                <p>Llegadas tarde</p>
+            </div>
+            <nav class="sidebar-menu">
+                <a href="dashboard.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+                <a href="estudiante.html"><i class="fas fa-users"></i> Estudiantes</a>
+                <a href="historial.html"><i class="fas fa-history"></i> Historial</a>
+                <a href="reportes.html" class="active"><i class="fas fa-chart-bar"></i> Reportes</a>
+                <a href="configuracion.html"><i class="fas fa-cog"></i> Configuración</a>
+            </nav>
+            <div class="sidebar-footer">
+                <button class="btn-logout" onclick="cerrarSesion()">
+                    <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+                </button>
+            </div>
+        </div>
+        <div class="main-content reportes-wrap">
+            <div class="panel">
+                <h2>Reportes de Llegadas Tarde</h2>
+                <div class="filtros">
+                    <div class="group">
+                        <label for="fechaInicio">Fecha inicio</label>
+                        <input type="date" id="fechaInicio">
+                    </div>
+                    <div class="group">
+                        <label for="fechaFin">Fecha fin</label>
+                        <input type="date" id="fechaFin">
+                    </div>
+                    <div class="group">
+                        <label for="estudianteSelect">Estudiante</label>
+                        <select id="estudianteSelect">
+                            <option value="">Todos los estudiantes</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-filtrar" id="btnFiltrar">
+                        <i class="fas fa-filter"></i> Filtrar
+                    </button>
+                </div>
+            </div>
+            <div class="panel">
+                <h2 id="tituloSeleccion">Selecciona un estudiante para generar reporte PDF</h2>
+                <button class="btn btn-pdf" id="btnGenerarReporte" disabled>
+                    <i class="fas fa-file-pdf"></i> Generar reporte PDF (llegadas tarde)
+                </button>
+            </div>
+            <div class="panel">
+                <h2>Historial filtrado de llegadas tarde</h2>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Hora</th>
+                                <th>Estudiante</th>
+                                <th>Grado</th>
+                                <th>Día</th>
+                                <th>Tipo</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tablaReportesBody">
+                            <tr><td colspan="6">Cargando...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="js/reportes.js?v=20260426c"></script>
+</body>
+</html>

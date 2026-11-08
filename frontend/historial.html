@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Historial - Control de Asistencia</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <img src="images/escudo.png" alt="Escudo" class="sidebar-logo">
+                <h2>Institución Educativa Nuestra Señora de Chiquinquirá</h2>
+                <p>Control de Asistencia</p>
+                <p>Llegadas tarde</p>
+            </div>
+            <nav class="sidebar-menu">
+                <a href="dashboard.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+                <a href="estudiante.html"><i class="fas fa-users"></i> Estudiantes</a>
+                <a href="historial.html" class="active"><i class="fas fa-history"></i> Historial</a>
+                <a href="reportes.html"><i class="fas fa-chart-bar"></i> Reportes</a>
+                <a href="configuracion.html"><i class="fas fa-cog"></i> Configuración</a>
+            </nav>
+            <div class="sidebar-footer">
+                <button class="btn-logout" onclick="cerrarSesion()">
+                    <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+                </button>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <header class="main-header">
+                <div class="header-left">
+                    <h1>Historial de Asistencia</h1>
+                    <p>Consulta por fecha y limpieza para pruebas</p>
+                </div>
+            </header>
+
+            <div class="filter-section">
+                <h2>Filtrar por Fecha</h2>
+                <div class="filter-controls">
+                    <div class="filter-group">
+                        <label for="fechaInicio">Fecha Inicio:</label>
+                        <input type="date" id="fechaInicio" class="date-picker">
+                    </div>
+                    <div class="filter-group">
+                        <label for="fechaFin">Fecha Fin:</label>
+                        <input type="date" id="fechaFin" class="date-picker">
+                    </div>
+                    <button class="btn-filter" id="btnFiltrar">
+                        <i class="fas fa-filter"></i> Filtrar
+                    </button>
+                    <button class="btn-reset" id="btnReset">
+                        <i class="fas fa-redo"></i> Resetear
+                    </button>
+                    <button class="btn-reset" id="btnBorrarHistorial" style="border-color:#dc3545;color:#dc3545;">
+                        <i class="fas fa-trash"></i> Borrar todo historial (pruebas)
+                    </button>
+                </div>
+            </div>
+
+            <div class="registros-table">
+                <h2>Registros</h2>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Hora</th>
+                                <th>Estudiante</th>
+                                <th>Grado</th>
+                                <th>Día</th>
+                                <th>Tipo</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tablaHistorialBody">
+                            <tr><td colspan="6" class="no-data">Cargando...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="js/historial.js?v=20260426c"></script>
+</body>
+</html>

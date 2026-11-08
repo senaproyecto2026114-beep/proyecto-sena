@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Control de Asistencia - Institución Educativa Nuestra Señora de Chiquinquirá</title>
+    <link rel="stylesheet" href="css/style.css?v=20260415">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .error-message {
+            background: #fee;
+            color: #c33;
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            display: none;
+            font-size: 0.9rem;
+        }
+
+        .success-message {
+            background: #dfd;
+            color: #373;
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            display: none;
+            font-size: 0.9rem;
+        }
+
+        .remember-forgot {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+        }
+
+        .remember-me {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .remember-me input {
+            width: 14px;
+            height: 14px;
+        }
+
+        .remember-me label {
+            color: #555;
+            margin: 0;
+        }
+
+        .forgot-password {
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        .forgot-password:hover {
+            text-decoration: underline;
+        }
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .modal-overlay.show {
+            display: flex;
+        }
+        .modal-recuperar {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            width: 100%;
+            max-width: 420px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .modal-recuperar .modal-header {
+            padding: 24px 24px 16px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .modal-recuperar .modal-header h3 {
+            margin: 0;
+            color: #2c3e50;
+            font-size: 20px;
+        }
+        .modal-recuperar .modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+            line-height: 1;
+        }
+        .modal-recuperar .modal-body {
+            padding: 24px;
+        }
+        .modal-recuperar .step {
+            display: none;
+        }
+        .modal-recuperar .step.active {
+            display: block;
+        }
+        .modal-recuperar .codigo-mostrado {
+            background: #f0f5ff;
+            border: 2px dashed #667eea;
+            border-radius: 10px;
+            padding: 16px;
+            text-align: center;
+            margin: 16px 0;
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: 4px;
+            color: #667eea;
+        }
+        .modal-recuperar .btn-modal {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .modal-recuperar .btn-primary-modal {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .modal-recuperar .btn-secondary-modal {
+            background: #f0f0f0;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="left-panel">
+            <div class="logo-container">
+                <img src="images/escudo.png" alt="Escudo del Colegio" class="logo">
+            </div>
+            <div class="institution-info">
+                <h1>Institución Educativa Nuestra Señora de Chiquinquirá</h1>
+                <h2>NI UNA LLEGADA TARDE MÁS</h2>
+            </div>
+            
+            <div class="login-form">
+                <h3>Inicio de Sesión</h3>
+                <div class="error-message" id="errorMessage"></div>
+                <div class="success-message" id="successMessage"></div>
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label for="username"><i class="fas fa-user"></i> Usuario</label>
+                        <input type="text" id="username" name="username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password"><i class="fas fa-lock"></i> Contraseña</label>
+                        <input type="password" id="password" name="password" required>
+                    </div>
+                    <div class="remember-forgot">
+                        <div class="remember-me">
+                            <input type="checkbox" id="rememberMe">
+                            <label for="rememberMe">Recordarme</label>
+                        </div>
+                        <a href="#" class="forgot-password" onclick="abrirModalRecuperacion(); return false;">¿Olvidó su contraseña?</a>
+                    </div>
+                    <button type="submit" class="btn-login">
+                        <i class="fas fa-sign-in-alt"></i> Ingresar
+                    </button>
+                </form>
+                <p class="register-link">
+                    ¿No tienes cuenta? <a href="login.html#registro">Regístrate aquí</a>
+                </p>
+            </div>
+            
+            <div class="footer">
+                <p><i class="fas fa-map-marker-alt"></i> Calle 4 No. 5 – 38 | Tel: (602) 2490075</p>
+                <p><i class="fas fa-globe"></i> Página web: <a href="http://www.iensch.edu.co" target="_blank" rel="noopener noreferrer">www.iensch.edu.co</a> | Email: <a href="mailto:nuestraroldanillo@sedvalledelcauca.gov.co">nuestraroldanillo@sedvalledelcauca.gov.co</a></p>
+                <p><i class="fas fa-city"></i> Roldanillo – Valle</p>
+            </div>
+        </div>
+        
+        <div class="right-panel">
+            <div class="hero-image">
+                <div class="hero-image__stack">
+                    <!-- Misma ruta que http://localhost:8080/images/colegio1.png — cambie el nombre aquí si renombra el archivo -->
+                    <img class="hero-image__photo" src="images/colegio1.png" alt="">
+                    <div class="hero-image__shade" aria-hidden="true"></div>
+                    <div class="image-overlay" style="display: flex; flex-direction: column; justify-content: flex-end;">
+                        <h3>Ser puntual, un compromiso con la excelencia</h3>
+                        <p>Control de asistencia con tecnología de huella digital para garantizar la puntualidad de nuestros estudiantes</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="system-status">
+                <h3>Estado del Sistema</h3>
+                <div class="status-cards">
+                    <div class="status-card">
+                        <i class="fas fa-fingerprint"></i>
+                        <h4>Sensor Huella</h4>
+                        <p class="status-online">Conectado</p>
+                    </div>
+                    <div class="status-card">
+                        <i class="fas fa-database"></i>
+                        <h4>Base de Datos</h4>
+                        <p class="status-online">Activa</p>
+                    </div>
+                    <div class="status-card">
+                        <i class="fas fa-users"></i>
+                        <h4>Estudiantes</h4>
+                        <p id="studentCount">Cargando...</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="recent-entries">
+                <h3>Últimos Ingresos</h3>
+                <div id="recentEntries">
+                    <p>Cargando registros recientes...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal Recuperar contraseña -->
+    <div class="modal-overlay" id="modalRecuperarOverlay" onclick="if(event.target===this) cerrarModalRecuperacion()">
+        <div class="modal-recuperar" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <h3>Recuperar contraseña</h3>
+                <button type="button" class="modal-close" onclick="cerrarModalRecuperacion()" aria-label="Cerrar">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="step active" id="step1Recuperar">
+                    <p style="color:#555; margin-bottom:16px;">Ingrese su nombre de usuario. Se generará un código de un solo uso para crear una nueva contraseña.</p>
+                    <div class="form-group">
+                        <label for="recuperarUsername">Usuario</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-user"></i>
+                            <input type="text" id="recuperarUsername" placeholder="Usuario">
+                        </div>
+                    </div>
+                    <div class="error-message" id="recuperarError1" style="margin-bottom:12px;"></div>
+                    <button type="button" class="btn-modal btn-primary-modal" id="btnSolicitarCodigo" onclick="solicitarCodigoRecuperacion()">
+                        <i class="fas fa-key"></i> Generar código
+                    </button>
+                </div>
+                <div class="step" id="step2Recuperar">
+                    <p style="color:#555; margin-bottom:8px;">Revise el código enviado a su correo registrado y elija su nueva contraseña (mínimo 8 caracteres con mayúsculas, minúsculas, números y símbolos).</p>
+                    <div class="form-group">
+                        <label for="recuperarCodigo">Código</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-barcode"></i>
+                            <input type="text" id="recuperarCodigo" placeholder="Código de 6 dígitos" maxlength="6" pattern="[0-9]*" inputmode="numeric">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="recuperarNuevaClave">Nueva contraseña</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" id="recuperarNuevaClave" placeholder="Mínimo 6 caracteres">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="recuperarConfirmarClave">Confirmar contraseña</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" id="recuperarConfirmarClave" placeholder="Repita la contraseña">
+                        </div>
+                    </div>
+                    <div class="error-message" id="recuperarError2" style="margin-bottom:12px;"></div>
+                    <button type="button" class="btn-modal btn-primary-modal" id="btnRestablecer" onclick="restablecerClaveRecuperacion()">
+                        <i class="fas fa-check"></i> Crear nueva contraseña
+                    </button>
+                    <button type="button" class="btn-modal btn-secondary-modal" style="margin-top:8px;" onclick="volverStep1Recuperacion()">
+                        <i class="fas fa-arrow-left"></i> Volver
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="js/main.js"></script>
+    <script>
+        // Misma URL del API que main.js (por si el orden de carga impide ver API_URL)
+        var API_URL = (typeof window !== 'undefined' && window.API_URL) ? window.API_URL : 'http://localhost:8000';
+
+        // Cargar credenciales guardadas si existen (login principal)
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedUsername = localStorage.getItem('savedUsername');
+            const rememberMe = localStorage.getItem('rememberMe') === 'true';
+            
+            if (rememberMe && savedUsername) {
+                const usernameInput = document.getElementById('username');
+                const rememberMeInput = document.getElementById('rememberMe');
+                if (usernameInput && rememberMeInput) {
+                    usernameInput.value = savedUsername;
+                    rememberMeInput.checked = true;
+                }
+            }
+        });
+
+        function abrirModalRecuperacion() {
+            document.getElementById('modalRecuperarOverlay').classList.add('show');
+            const mainUsername = document.getElementById('username');
+            const recuperarUsername = document.getElementById('recuperarUsername');
+            if (mainUsername && recuperarUsername) {
+                recuperarUsername.value = mainUsername.value || '';
+            }
+            document.getElementById('recuperarError1').style.display = 'none';
+            document.getElementById('recuperarError2').style.display = 'none';
+            document.getElementById('step1Recuperar').classList.add('active');
+            document.getElementById('step2Recuperar').classList.remove('active');
+        }
+
+        function cerrarModalRecuperacion() {
+            document.getElementById('modalRecuperarOverlay').classList.remove('show');
+        }
+
+        function volverStep1Recuperacion() {
+            document.getElementById('step1Recuperar').classList.add('active');
+            document.getElementById('step2Recuperar').classList.remove('active');
+            document.getElementById('recuperarError2').style.display = 'none';
+        }
+
+        async function solicitarCodigoRecuperacion() {
+            const username = document.getElementById('recuperarUsername').value.trim();
+            const errEl = document.getElementById('recuperarError1');
+            const btn = document.getElementById('btnSolicitarCodigo');
+            errEl.style.display = 'none';
+            if (!username) {
+                errEl.textContent = 'Ingrese su usuario';
+                errEl.style.display = 'block';
+                return;
+            }
+            const originalHtml = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generando...';
+            btn.disabled = true;
+            try {
+                const response = await fetch(`${API_URL}/api/olvide-clave/solicitar`, {
+                    method: 'POST',
+                    mode: 'cors',
+                    credentials: 'omit',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username })
+                });
+                const data = await response.json().catch(() => ({}));
+                if (response.ok && data.success) {
+                    document.getElementById('recuperarCodigo').value = '';
+                    document.getElementById('recuperarNuevaClave').value = '';
+                    document.getElementById('recuperarConfirmarClave').value = '';
+                    document.getElementById('step1Recuperar').classList.remove('active');
+                    document.getElementById('step2Recuperar').classList.add('active');
+                } else {
+                    errEl.textContent = data.detail || 'Error al generar el código';
+                    errEl.style.display = 'block';
+                }
+            } catch (e) {
+                const detalle = (e && e.message) ? e.message : '';
+                errEl.textContent =
+                    'No se pudo conectar con el servidor en ' + API_URL + '. ' +
+                    (detalle ? '(' + detalle + ') ' : '') +
+                    'Compruebe que uvicorn esté en ejecución y que abra la página por http:// (no file://).';
+                errEl.style.display = 'block';
+            } finally {
+                btn.innerHTML = originalHtml;
+                btn.disabled = false;
+            }
+        }
+
+        async function restablecerClaveRecuperacion() {
+            const username = document.getElementById('recuperarUsername').value.trim();
+            const codigo = document.getElementById('recuperarCodigo').value.trim();
+            const nuevaClave = document.getElementById('recuperarNuevaClave').value;
+            const confirmarClave = document.getElementById('recuperarConfirmarClave').value;
+            const errEl = document.getElementById('recuperarError2');
+            const btn = document.getElementById('btnRestablecer');
+            errEl.style.display = 'none';
+            if (!codigo || codigo.length !== 6) {
+                errEl.textContent = 'Ingrese el código de 6 dígitos';
+                errEl.style.display = 'block';
+                return;
+            }
+            if (nuevaClave.length < 8) {
+                errEl.textContent = 'La contraseña debe tener al menos 8 caracteres';
+                errEl.style.display = 'block';
+                return;
+            }
+            const tm = /[A-Z]/.test(nuevaClave), tmin = /[a-z]/.test(nuevaClave), tn = /[0-9]/.test(nuevaClave), ts = /[^A-Za-z0-9]/.test(nuevaClave);
+            if (!tm || !tmin || !tn || !ts) {
+                errEl.textContent = 'La contraseña debe incluir mayúsculas, minúsculas, números y símbolos';
+                errEl.style.display = 'block';
+                return;
+            }
+            if (nuevaClave !== confirmarClave) {
+                errEl.textContent = 'Las contraseñas no coinciden';
+                errEl.style.display = 'block';
+                return;
+            }
+            const originalHtml = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Actualizando...';
+            btn.disabled = true;
+            try {
+                const response = await fetch(`${API_URL}/api/olvide-clave/restablecer`, {
+                    method: 'POST',
+                    mode: 'cors',
+                    credentials: 'omit',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, codigo, nueva_clave: nuevaClave })
+                });
+                const data = await response.json().catch(() => ({}));
+                if (response.ok && data.success) {
+                    cerrarModalRecuperacion();
+                    document.getElementById('successMessage').textContent = data.mensaje || 'Contraseña actualizada. Inicie sesión con su nueva contraseña.';
+                    document.getElementById('successMessage').style.display = 'block';
+                    document.getElementById('errorMessage').style.display = 'none';
+                    document.getElementById('password').value = '';
+                } else {
+                    errEl.textContent = data.detail || 'Error al restablecer la contraseña';
+                    errEl.style.display = 'block';
+                }
+            } catch (e) {
+                const detalle = (e && e.message) ? e.message : '';
+                errEl.textContent =
+                    'No se pudo conectar con el servidor en ' + API_URL + '. ' +
+                    (detalle ? '(' + detalle + ') ' : '') +
+                    'Compruebe que uvicorn esté en ejecución.';
+                errEl.style.display = 'block';
+            } finally {
+                btn.innerHTML = originalHtml;
+                btn.disabled = false;
+            }
+        }
+    </script>
+</body>
+</html>

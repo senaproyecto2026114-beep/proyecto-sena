@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión - Control de Asistencia</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .login-full-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+        }
+
+        .login-box {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 450px;
+            padding: 40px;
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .login-logo {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 20px;
+            background: #f8f9fa;
+            border-radius: 50%;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .login-logo img {
+            width: 70px;
+            height: 70px;
+        }
+
+        .login-header h1 {
+            color: #2c3e50;
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .login-header p {
+            color: #667eea;
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 500;
+        }
+
+        .input-with-icon {
+            position: relative;
+        }
+
+        .input-with-icon i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #667eea;
+        }
+
+        .input-with-icon input {
+            width: 100%;
+            padding: 15px 15px 15px 45px;
+            border: 2px solid #e1e5eb;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        .input-with-icon input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .btn-login-full {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-login-full:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 7px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .login-footer {
+            margin-top: 30px;
+            text-align: center;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .login-footer a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .login-footer a:hover {
+            text-decoration: underline;
+        }
+
+        .error-message {
+            background: #fee;
+            color: #c33;
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .success-message {
+            background: #dfd;
+            color: #373;
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .remember-forgot {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .remember-me {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .remember-me input {
+            width: 16px;
+            height: 16px;
+        }
+
+        .remember-me label {
+            color: #555;
+            font-size: 14px;
+            margin: 0;
+        }
+
+        .forgot-password {
+            color: #667eea;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .forgot-password:hover {
+            text-decoration: underline;
+        }
+
+        .credential-hint {
+            background: #f0f5ff;
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            margin-bottom: 25px;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .credential-hint h4 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .credential-hint ul {
+            margin: 0;
+            padding-left: 20px;
+            color: #555;
+            font-size: 13px;
+        }
+
+        .credential-hint li {
+            margin-bottom: 5px;
+        }
+
+        /* Modal recuperar clave */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .modal-overlay.show {
+            display: flex;
+        }
+        .modal-recuperar {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            width: 100%;
+            max-width: 420px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .modal-recuperar .modal-header {
+            padding: 24px 24px 16px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .modal-recuperar .modal-header h3 {
+            margin: 0;
+            color: #2c3e50;
+            font-size: 20px;
+        }
+        .modal-recuperar .modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+            line-height: 1;
+        }
+        .modal-recuperar .modal-body {
+            padding: 24px;
+        }
+        .modal-recuperar .step {
+            display: none;
+        }
+        .modal-recuperar .step.active {
+            display: block;
+        }
+        .modal-recuperar .codigo-mostrado {
+            background: #f0f5ff;
+            border: 2px dashed #667eea;
+            border-radius: 10px;
+            padding: 16px;
+            text-align: center;
+            margin: 16px 0;
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: 4px;
+            color: #667eea;
+        }
+        .modal-recuperar .btn-modal {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .modal-recuperar .btn-primary-modal {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .modal-recuperar .btn-secondary-modal {
+            background: #f0f0f0;
+            color: #555;
+        }
+
+        @media (max-width: 480px) {
+            .login-box {
+                padding: 30px 20px;
+            }
+            
+            .login-header h1 {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-full-container">
+        <div class="login-box">
+            <div class="login-header">
+                <div class="login-logo">
+                    <img src="images/escudo.png" alt="Escudo del Colegio">
+                </div>
+                <h1>Institución Educativa<br>Nuestra Señora de Chiquinquirá</h1>
+                <p>NI UNA LLEGADA TARDE MÁS</p>
+            </div>
+
+            <div class="error-message" id="errorMessage"></div>
+            <div class="success-message" id="successMessage"></div>
+
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="username">Usuario</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-user"></i>
+                        <input type="text" id="username" name="username" placeholder="Ingrese su usuario" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Contraseña</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="password" name="password" placeholder="Ingrese su contraseña" required>
+                    </div>
+                </div>
+
+                <div class="remember-forgot">
+                    <div class="remember-me">
+                        <input type="checkbox" id="rememberMe">
+                        <label for="rememberMe">Recordarme</label>
+                    </div>
+                    <a href="#" class="forgot-password" onclick="abrirModalRecuperacion(); return false;">¿Olvidó su contraseña?</a>
+                </div>
+
+                <button type="submit" class="btn-login-full">
+                    <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
+                </button>
+            </form>
+
+            <div class="login-footer">
+                <p>¿No tienes cuenta? <a href="#" onclick="abrirRegistro(); return false;">Registrarse como administrador</a></p>
+                <p><a href="index.html"><i class="fas fa-arrow-left"></i> Volver a la página principal</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Recuperar contraseña -->
+    <div class="modal-overlay" id="modalRecuperarOverlay" onclick="if(event.target===this) cerrarModalRecuperacion()">
+        <div class="modal-recuperar" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <h3>Recuperar contraseña</h3>
+                <button type="button" class="modal-close" onclick="cerrarModalRecuperacion()" aria-label="Cerrar">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="step active" id="step1Recuperar">
+                    <p style="color:#555; margin-bottom:16px;">Ingrese su nombre de usuario. Se generará un código de un solo uso para crear una nueva contraseña.</p>
+                    <div class="form-group">
+                        <label for="recuperarUsername">Usuario</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-user"></i>
+                            <input type="text" id="recuperarUsername" placeholder="Usuario">
+                        </div>
+                    </div>
+                    <div class="error-message" id="recuperarError1" style="margin-bottom:12px;"></div>
+                    <button type="button" class="btn-modal btn-primary-modal" id="btnSolicitarCodigo" onclick="solicitarCodigoRecuperacion()">
+                        <i class="fas fa-key"></i> Generar código
+                    </button>
+                </div>
+                <div class="step" id="step2Recuperar">
+                    <p style="color:#555; margin-bottom:8px;">Revise el código enviado a su correo registrado y elija su nueva contraseña (mínimo 8 caracteres con mayúsculas, minúsculas, números y símbolos).</p>
+                    <div class="form-group">
+                        <label for="recuperarCodigo">Código</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-barcode"></i>
+                            <input type="text" id="recuperarCodigo" placeholder="Código de 6 dígitos" maxlength="6" pattern="[0-9]*" inputmode="numeric">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="recuperarNuevaClave">Nueva contraseña</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" id="recuperarNuevaClave" placeholder="Mínimo 6 caracteres">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="recuperarConfirmarClave">Confirmar contraseña</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" id="recuperarConfirmarClave" placeholder="Repita la contraseña">
+                        </div>
+                    </div>
+                    <div class="error-message" id="recuperarError2" style="margin-bottom:12px;"></div>
+                    <button type="button" class="btn-modal btn-primary-modal" id="btnRestablecer" onclick="restablecerClaveRecuperacion()">
+                        <i class="fas fa-check"></i> Crear nueva contraseña
+                    </button>
+                    <button type="button" class="btn-modal btn-secondary-modal" style="margin-top:8px;" onclick="volverStep1Recuperacion()">
+                        <i class="fas fa-arrow-left"></i> Volver
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Registro de Administrador -->
+    <div class="modal-overlay" id="modalRegistroOverlay" onclick="if(event.target===this) cerrarRegistro()">
+        <div class="modal-recuperar" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <h3>Registro de Administrador</h3>
+                <button type="button" class="modal-close" onclick="cerrarRegistro()" aria-label="Cerrar">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p style="color:#555; margin-bottom:8px;font-size:14px;">
+                    Complete sus datos para registrarse como coordinador(a) o rectora. Solo se permiten 2 coordinadores y 1 rectora en el sistema.
+                </p>
+                <div class="error-message" id="registroError" style="margin-bottom:12px;"></div>
+                <div class="success-message" id="registroSuccess" style="margin-bottom:12px;"></div>
+
+                <div class="form-group">
+                    <label for="regPrimerNombre">Primer nombre</label>
+                    <input type="text" id="regPrimerNombre" placeholder="Primer nombre">
+                </div>
+                <div class="form-group">
+                    <label for="regSegundoNombre">Segundo nombre</label>
+                    <input type="text" id="regSegundoNombre" placeholder="Segundo nombre (opcional)">
+                </div>
+                <div class="form-group">
+                    <label for="regPrimerApellido">Primer apellido</label>
+                    <input type="text" id="regPrimerApellido" placeholder="Primer apellido">
+                </div>
+                <div class="form-group">
+                    <label for="regSegundoApellido">Segundo apellido</label>
+                    <input type="text" id="regSegundoApellido" placeholder="Segundo apellido (opcional)">
+                </div>
+                <div class="form-group">
+                    <label for="regDocumento">Número de documento</label>
+                    <input type="text" id="regDocumento" placeholder="Documento de identidad">
+                </div>
+                <div class="form-group">
+                    <label for="regCorreo">Correo electrónico (será su usuario)</label>
+                    <input type="email" id="regCorreo" placeholder="correo@ejemplo.com">
+                </div>
+                <div class="form-group">
+                    <label for="regCelular">Número de celular</label>
+                    <input type="text" id="regCelular" placeholder="Número de celular">
+                </div>
+                <div class="form-group">
+                    <label for="regRol">Rol</label>
+                    <select id="regRol" onchange="onCambioRolRegistro()">
+                        <option value="">Seleccione un rol</option>
+                        <option value="COORDINADOR">Coordinador(a)</option>
+                        <option value="RECTORA">Rectora</option>
+                    </select>
+                </div>
+                <div class="form-group" id="grupoGrados" style="display:none;">
+                    <label>Grados a cargo (solo para coordinador(a))</label>
+                    <p style="font-size:12px;color:#666;margin-bottom:6px;">
+                        Seleccione los grados que estarán a su cargo.
+                    </p>
+                    <div style="max-height:160px; overflow-y:auto; border:1px solid #e1e5eb; border-radius:8px; padding:8px; font-size:13px;">
+                        <strong>Grados 6° a 8°</strong><br>
+                        <label><input type="checkbox" class="chk-grado" value="6-1"> 6-1</label>
+                        <label><input type="checkbox" class="chk-grado" value="6-2"> 6-2</label>
+                        <label><input type="checkbox" class="chk-grado" value="6-3"> 6-3</label>
+                        <label><input type="checkbox" class="chk-grado" value="6-4"> 6-4</label>
+                        <label><input type="checkbox" class="chk-grado" value="6-5"> 6-5</label>
+                        <br>
+                        <label><input type="checkbox" class="chk-grado" value="7-1"> 7-1</label>
+                        <label><input type="checkbox" class="chk-grado" value="7-2"> 7-2</label>
+                        <label><input type="checkbox" class="chk-grado" value="7-3"> 7-3</label>
+                        <label><input type="checkbox" class="chk-grado" value="7-4"> 7-4</label>
+                        <label><input type="checkbox" class="chk-grado" value="7-5"> 7-5</label>
+                        <br>
+                        <label><input type="checkbox" class="chk-grado" value="8-1"> 8-1</label>
+                        <label><input type="checkbox" class="chk-grado" value="8-2"> 8-2</label>
+                        <label><input type="checkbox" class="chk-grado" value="8-3"> 8-3</label>
+                        <label><input type="checkbox" class="chk-grado" value="8-4"> 8-4</label>
+                        <label><input type="checkbox" class="chk-grado" value="8-5"> 8-5</label>
+                        <br><br>
+                        <strong>Grados 9° a 11°</strong><br>
+                        <label><input type="checkbox" class="chk-grado" value="9-1"> 9-1</label>
+                        <label><input type="checkbox" class="chk-grado" value="9-2"> 9-2</label>
+                        <label><input type="checkbox" class="chk-grado" value="9-3"> 9-3</label>
+                        <label><input type="checkbox" class="chk-grado" value="9-4"> 9-4</label>
+                        <label><input type="checkbox" class="chk-grado" value="9-5"> 9-5</label>
+                        <br>
+                        <label><input type="checkbox" class="chk-grado" value="10-1"> 10-1</label>
+                        <label><input type="checkbox" class="chk-grado" value="10-2"> 10-2</label>
+                        <label><input type="checkbox" class="chk-grado" value="10-3"> 10-3</label>
+                        <label><input type="checkbox" class="chk-grado" value="10-4"> 10-4</label>
+                        <br>
+                        <label><input type="checkbox" class="chk-grado" value="11-1"> 11-1</label>
+                        <label><input type="checkbox" class="chk-grado" value="11-2"> 11-2</label>
+                        <label><input type="checkbox" class="chk-grado" value="11-3"> 11-3</label>
+                        <label><input type="checkbox" class="chk-grado" value="11-4"> 11-4</label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="regPassword">Contraseña</label>
+                    <input type="password" id="regPassword" placeholder="Mínimo 8 caracteres con mayúsculas, minúsculas, números y símbolos">
+                </div>
+                <div class="form-group">
+                    <label for="regPassword2">Confirmar contraseña</label>
+                    <input type="password" id="regPassword2" placeholder="Repita la contraseña">
+                </div>
+
+                <button type="button" class="btn-modal btn-primary-modal" onclick="enviarRegistroAdmin()">
+                    <i class="fas fa-user-plus"></i> Registrarme
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:8000';
+
+        // Cargar credenciales guardadas si existen
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedUsername = localStorage.getItem('savedUsername');
+            const rememberMe = localStorage.getItem('rememberMe') === 'true';
+            
+            if (rememberMe && savedUsername) {
+                document.getElementById('username').value = savedUsername;
+                document.getElementById('rememberMe').checked = true;
+            }
+        });
+
+        // Manejar login
+        document.getElementById('loginForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const rememberMe = document.getElementById('rememberMe').checked;
+            
+            // Mostrar carga
+            const submitBtn = event.target.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verificando...';
+            submitBtn.disabled = true;
+            
+            try {
+                const response = await fetch(`${API_URL}/api/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ username, password })
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    
+                    // Guardar en localStorage si "Recordarme" está activado
+                    if (rememberMe) {
+                        localStorage.setItem('savedUsername', username);
+                        localStorage.setItem('rememberMe', 'true');
+                    } else {
+                        localStorage.removeItem('savedUsername');
+                        localStorage.removeItem('rememberMe');
+                    }
+                    
+                    // Guardar información de administrador
+                    localStorage.setItem('admin', JSON.stringify(data.admin));
+                    
+                    // Mostrar mensaje de éxito
+                    document.getElementById('successMessage').textContent = '¡Inicio de sesión exitoso! Redirigiendo...';
+                    document.getElementById('successMessage').style.display = 'block';
+                    document.getElementById('errorMessage').style.display = 'none';
+                    
+                    // Redirigir al dashboard después de 1 segundo
+                    setTimeout(() => {
+                        window.location.href = 'dashboard.html';
+                    }, 1000);
+                    
+                } else {
+                    let msg = 'Usuario o contraseña incorrectos';
+                    try {
+                        const error = await response.json();
+                        msg = (typeof error.detail === 'string' ? error.detail : error.detail?.[0]?.msg || JSON.stringify(error.detail)) || msg;
+                    } catch (_) {}
+                    document.getElementById('errorMessage').textContent = msg;
+                    document.getElementById('errorMessage').style.display = 'block';
+                    document.getElementById('successMessage').style.display = 'none';
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('errorMessage').textContent = 'No se pudo conectar con el servidor. Compruebe que el backend esté en ejecución en http://localhost:8000 (abra esa URL o /docs en el navegador para verificarlo).';
+                document.getElementById('errorMessage').style.display = 'block';
+                document.getElementById('successMessage').style.display = 'none';
+            } finally {
+                // Restaurar botón
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }
+        });
+
+        function abrirModalRecuperacion() {
+            document.getElementById('modalRecuperarOverlay').classList.add('show');
+            document.getElementById('recuperarUsername').value = document.getElementById('username').value || '';
+            document.getElementById('recuperarError1').style.display = 'none';
+            document.getElementById('recuperarError2').style.display = 'none';
+            document.getElementById('step1Recuperar').classList.add('active');
+            document.getElementById('step2Recuperar').classList.remove('active');
+        }
+
+        function cerrarModalRecuperacion() {
+            document.getElementById('modalRecuperarOverlay').classList.remove('show');
+        }
+
+        function volverStep1Recuperacion() {
+            document.getElementById('step1Recuperar').classList.add('active');
+            document.getElementById('step2Recuperar').classList.remove('active');
+            document.getElementById('recuperarError2').style.display = 'none';
+        }
+
+        async function solicitarCodigoRecuperacion() {
+            const username = document.getElementById('recuperarUsername').value.trim();
+            const errEl = document.getElementById('recuperarError1');
+            const btn = document.getElementById('btnSolicitarCodigo');
+            errEl.style.display = 'none';
+            if (!username) {
+                errEl.textContent = 'Ingrese su usuario';
+                errEl.style.display = 'block';
+                return;
+            }
+            const originalHtml = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generando...';
+            btn.disabled = true;
+            try {
+                const response = await fetch(`${API_URL}/api/olvide-clave/solicitar`, {
+                    method: 'POST',
+                    mode: 'cors',
+                    credentials: 'omit',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username })
+                });
+                const data = await response.json().catch(() => ({}));
+                if (response.ok && data.success) {
+                    document.getElementById('recuperarCodigo').value = '';
+                    document.getElementById('recuperarNuevaClave').value = '';
+                    document.getElementById('recuperarConfirmarClave').value = '';
+                    document.getElementById('step1Recuperar').classList.remove('active');
+                    document.getElementById('step2Recuperar').classList.add('active');
+                } else {
+                    errEl.textContent = data.detail || 'Error al generar el código';
+                    errEl.style.display = 'block';
+                }
+            } catch (e) {
+                errEl.textContent = 'No se pudo conectar con el servidor.';
+                errEl.style.display = 'block';
+            } finally {
+                btn.innerHTML = originalHtml;
+                btn.disabled = false;
+            }
+        }
+
+        async function restablecerClaveRecuperacion() {
+            const username = document.getElementById('recuperarUsername').value.trim();
+            const codigo = document.getElementById('recuperarCodigo').value.trim();
+            const nuevaClave = document.getElementById('recuperarNuevaClave').value;
+            const confirmarClave = document.getElementById('recuperarConfirmarClave').value;
+            const errEl = document.getElementById('recuperarError2');
+            const btn = document.getElementById('btnRestablecer');
+            errEl.style.display = 'none';
+            if (!codigo || codigo.length !== 6) {
+                errEl.textContent = 'Ingrese el código de 6 dígitos';
+                errEl.style.display = 'block';
+                return;
+            }
+            if (nuevaClave.length < 8) {
+                errEl.textContent = 'La contraseña debe tener al menos 8 caracteres';
+                errEl.style.display = 'block';
+                return;
+            }
+            const tieneMayus = /[A-Z]/.test(nuevaClave);
+            const tieneMinus = /[a-z]/.test(nuevaClave);
+            const tieneNum = /[0-9]/.test(nuevaClave);
+            const tieneSimbolo = /[^A-Za-z0-9]/.test(nuevaClave);
+            if (!tieneMayus || !tieneMinus || !tieneNum || !tieneSimbolo) {
+                errEl.textContent = 'La contraseña debe incluir mayúsculas, minúsculas, números y símbolos';
+                errEl.style.display = 'block';
+                return;
+            }
+            if (nuevaClave !== confirmarClave) {
+                errEl.textContent = 'Las contraseñas no coinciden';
+                errEl.style.display = 'block';
+                return;
+            }
+            const originalHtml = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Actualizando...';
+            btn.disabled = true;
+            try {
+                const response = await fetch(`${API_URL}/api/olvide-clave/restablecer`, {
+                    method: 'POST',
+                    mode: 'cors',
+                    credentials: 'omit',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, codigo, nueva_clave: nuevaClave })
+                });
+                const data = await response.json().catch(() => ({}));
+                if (response.ok && data.success) {
+                    cerrarModalRecuperacion();
+                    document.getElementById('successMessage').textContent = data.mensaje || 'Contraseña actualizada. Inicie sesión con su nueva contraseña.';
+                    document.getElementById('successMessage').style.display = 'block';
+                    document.getElementById('errorMessage').style.display = 'none';
+                    document.getElementById('password').value = '';
+                } else {
+                    errEl.textContent = data.detail || 'Error al restablecer la contraseña';
+                    errEl.style.display = 'block';
+                }
+            } catch (e) {
+                errEl.textContent = 'No se pudo conectar con el servidor.';
+                errEl.style.display = 'block';
+            } finally {
+                btn.innerHTML = originalHtml;
+                btn.disabled = false;
+            }
+        }
+
+        function mostrarRegistro() {
+            abrirRegistro();
+        }
+
+        // Función para mostrar/ocultar contraseña
+        function togglePassword() {
+            const passwordInput = document.getElementById('password');
+            const toggleIcon = document.getElementById('togglePasswordIcon');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleIcon.className = 'fas fa-eye-slash';
+            } else {
+                passwordInput.type = 'password';
+                toggleIcon.className = 'fas fa-eye';
+            }
+        }
+        
+        function abrirRegistro() {
+            document.getElementById('registroError').style.display = 'none';
+            document.getElementById('registroSuccess').style.display = 'none';
+            document.getElementById('modalRegistroOverlay').classList.add('show');
+        }
+
+        function cerrarRegistro() {
+            document.getElementById('modalRegistroOverlay').classList.remove('show');
+        }
+
+        function onCambioRolRegistro() {
+            const rol = document.getElementById('regRol').value;
+            const grupoGrados = document.getElementById('grupoGrados');
+            if (rol === 'COORDINADOR') {
+                grupoGrados.style.display = 'block';
+            } else {
+                grupoGrados.style.display = 'none';
+            }
+        }
+
+        async function enviarRegistroAdmin() {
+            const errEl = document.getElementById('registroError');
+            const okEl = document.getElementById('registroSuccess');
+            errEl.style.display = 'none';
+            okEl.style.display = 'none';
+
+            const primerNombre = document.getElementById('regPrimerNombre').value.trim();
+            const segundoNombre = document.getElementById('regSegundoNombre').value.trim();
+            const primerApellido = document.getElementById('regPrimerApellido').value.trim();
+            const segundoApellido = document.getElementById('regSegundoApellido').value.trim();
+            const documento = document.getElementById('regDocumento').value.trim();
+            const correo = document.getElementById('regCorreo').value.trim();
+            const celular = document.getElementById('regCelular').value.trim();
+            const rol = document.getElementById('regRol').value;
+            const password = document.getElementById('regPassword').value;
+            const password2 = document.getElementById('regPassword2').value;
+
+            if (!primerNombre || !primerApellido || !documento || !correo || !celular || !rol) {
+                errEl.textContent = 'Complete todos los campos obligatorios.';
+                errEl.style.display = 'block';
+                return;
+            }
+
+            if (password !== password2) {
+                errEl.textContent = 'Las contraseñas no coinciden.';
+                errEl.style.display = 'block';
+                return;
+            }
+
+            if (password.length < 8) {
+                errEl.textContent = 'La contraseña debe tener al menos 8 caracteres.';
+                errEl.style.display = 'block';
+                return;
+            }
+            const tieneMayus = /[A-Z]/.test(password);
+            const tieneMinus = /[a-z]/.test(password);
+            const tieneNum = /[0-9]/.test(password);
+            const tieneSimbolo = /[^A-Za-z0-9]/.test(password);
+            if (!tieneMayus || !tieneMinus || !tieneNum || !tieneSimbolo) {
+                errEl.textContent = 'La contraseña debe incluir mayúsculas, minúsculas, números y símbolos.';
+                errEl.style.display = 'block';
+                return;
+            }
+
+            let grados = [];
+            if (rol === 'COORDINADOR') {
+                const checks = document.querySelectorAll('.chk-grado:checked');
+                checks.forEach(chk => grados.push(chk.value));
+                if (grados.length === 0) {
+                    errEl.textContent = 'Seleccione al menos un grado a cargo.';
+                    errEl.style.display = 'block';
+                    return;
+                }
+            }
+
+            const btns = document.querySelectorAll('#modalRegistroOverlay .btn-primary-modal');
+            const btn = btns[0];
+            const originalHtml = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Registrando...';
+            btn.disabled = true;
+
+            try {
+                const response = await fetch(`${API_URL}/api/admins/registrar`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        primer_nombre: primerNombre,
+                        segundo_nombre: segundoNombre || null,
+                        primer_apellido: primerApellido,
+                        segundo_apellido: segundoApellido || null,
+                        numero_documento: documento,
+                        correo: correo,
+                        celular: celular,
+                        rol: rol,
+                        grados: grados,
+                        password: password
+                    })
+                });
+                const data = await response.json().catch(() => ({}));
+                if (response.ok && data.success) {
+                    okEl.textContent = data.mensaje || 'Registro exitoso. Ya puede iniciar sesión.';
+                    okEl.style.display = 'block';
+                    errEl.style.display = 'none';
+                } else {
+                    errEl.textContent = data.detail || 'No se pudo completar el registro.';
+                    errEl.style.display = 'block';
+                }
+            } catch (e) {
+                const detalle = (e && e.message) ? e.message : '';
+                errEl.textContent =
+                    'No se pudo conectar con el servidor en ' + API_URL + '. ' +
+                    (detalle ? '(' + detalle + ') ' : '') +
+                    'Deje uvicorn en ejecución (puerto 8000) y abra esta página con un servidor local (por ejemplo Live Server), no como archivo file://.';
+                errEl.style.display = 'block';
+            } finally {
+                btn.innerHTML = originalHtml;
+                btn.disabled = false;
+            }
+        }
+    </script>
+</body>
+</html>

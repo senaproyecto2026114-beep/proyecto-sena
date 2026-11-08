@@ -1,0 +1,11 @@
+fastapi==0.104.1
+uvicorn==0.24.0
+mysql-connector-python==8.2.0
+python-multipart==0.0.6
+pydantic==2.5.0
+email-validator==2.1.0.post1
+reportlab==4.0.7
+twilio==8.9.0
+python-dotenv==1.0.0
+pytz==2023.3
+pyserial==3.5

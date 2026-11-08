@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Control de Asistencia</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <img src="images/escudo.png" alt="Escudo" class="sidebar-logo">
+                <h2>Institución Educativa Nuestra Señora de Chiquinquirá</h2>
+                <p>Control de Asistencia</p>
+                <p>Llegadas tarde</p>
+            </div>
+            
+            <nav class="sidebar-menu">
+                <a href="dashboard.html" class="active">
+                    <i class="fas fa-tachometer-alt"></i> Dashboard
+                </a>
+                <a href="#" id="btnEstudiantes">
+                    <i class="fas fa-users"></i> Estudiantes
+                </a>
+                <a href="#" id="btnRegistros">
+                    <i class="fas fa-history"></i> Historial
+                </a>
+                <a href="#" id="btnReportes">
+                    <i class="fas fa-chart-bar"></i> Reportes
+                </a>
+                <a href="#" id="btnConfiguracion">
+                    <i class="fas fa-cog"></i> Configuración
+                </a>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <button class="btn-logout" onclick="cerrarSesion()">
+                    <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+                </button>
+            </div>
+        </div>
+        
+        <div class="main-content">
+            <header class="main-header">
+                <div class="header-left">
+                    <h1>Dashboard</h1>
+                    <p id="adminName">Cargando...</p>
+                </div>
+                <div class="header-right">
+                    <div class="date-time">
+                        <span id="currentDate"></span>
+                        <span id="currentTime"></span>
+                    </div>
+                </div>
+            </header>
+            
+            <div class="stats-cards">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-user-graduate"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="totalEstudiantes">0</h3>
+                        <p>Estudiantes Activos</p>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="puntualesHoy">0</h3>
+                        <p>Puntuales Hoy</p>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="tardesHoy">0</h3>
+                        <p>Tardes Hoy</p>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-calendar-week"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="tardesSemana">0</h3>
+                        <p>Tardes Esta Semana</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="filter-section">
+                <h2>Filtrar por Fecha</h2>
+                <div class="filter-controls">
+                    <div class="filter-group">
+                        <label for="fechaInicio">Fecha Inicio:</label>
+                        <input type="date" id="fechaInicio" class="date-picker">
+                    </div>
+                    <div class="filter-group">
+                        <label for="fechaFin">Fecha Fin:</label>
+                        <input type="date" id="fechaFin" class="date-picker">
+                    </div>
+                    <button class="btn-filter" onclick="filtrarRegistros()">
+                        <i class="fas fa-filter"></i> Filtrar
+                    </button>
+                    <button class="btn-reset" onclick="resetFiltros()">
+                        <i class="fas fa-redo"></i> Resetear
+                    </button>
+                </div>
+            </div>
+            
+            <div class="registros-table">
+                <h2>Registros de Asistencia</h2>
+                <div class="table-container">
+                    <table id="tablaRegistros">
+                        <thead>
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Hora</th>
+                                <th>Estudiante</th>
+                                <th>Grado</th>
+                                <th>Día</th>
+                                <th>Tipo</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tablaRegistrosBody">
+                            <!-- Los registros se cargarán aquí -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div class="sensor-section">
+                <h2>Estado del Sensor de Huella</h2>
+                <div class="sensor-status">
+                    <div class="sensor-indicator">
+                        <div class="led led-green"></div>
+                        <span>Sensor Conectado</span>
+                    </div>
+                    <div class="sensor-info">
+                        <p><strong>Última lectura:</strong> <span id="ultimaLectura">--:--:--</span></p>
+                        <p><strong>Estudiante detectado:</strong> <span id="estudianteDetectado">Ninguno</span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="js/dashboard.js?v=20260426c"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+</body>
+</html>

@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Estudiantes - Control de Asistencia</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .estudiantes-container {
+            display: flex;
+            min-height: 100vh;
+            background: #f5f7fb;
+        }
+
+        .sidebar {
+            width: 250px;
+            background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-header {
+            padding: 30px 20px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar-logo {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 15px;
+            background: white;
+            border-radius: 50%;
+            padding: 10px;
+        }
+
+        .sidebar-header h2 {
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+
+        .sidebar-header p {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        .sidebar-menu {
+            flex: 1;
+            padding: 20px 0;
+        }
+
+        .sidebar-menu a {
+            display: block;
+            padding: 15px 25px;
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s;
+            border-left: 4px solid transparent;
+        }
+
+        .sidebar-menu a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-left-color: white;
+        }
+
+        .sidebar-menu a.active {
+            background: rgba(255, 255, 255, 0.1);
+            border-left-color: white;
+        }
+
+        .sidebar-menu i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .sidebar-footer {
+            padding: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-logout {
+            width: 100%;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-logout:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .header-bar {
+            background: white;
+            padding: 20px 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-title h1 {
+            color: #2c3e50;
+            margin-bottom: 5px;
+            font-size: 28px;
+        }
+
+        .header-title p {
+            color: #667eea;
+            font-weight: 500;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 15px;
+        }
+
+        .btn-primary, .btn-secondary {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #f8f9fa;
+            color: #666;
+            border: 2px solid #ddd;
+        }
+
+        .btn-primary:hover, .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .search-filter {
+            background: white;
+            padding: 25px 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .search-filter h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 22px;
+        }
+
+        .filter-controls {
+            display: flex;
+            gap: 20px;
+            align-items: flex-end;
+            flex-wrap: wrap;
+        }
+
+        .filter-group {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .filter-group label {
+            display: block;
+            color: #555;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        .select-input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            background: white;
+        }
+
+        .estudiantes-table-container {
+            background: white;
+            padding: 25px 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .table-header h2 {
+            color: #2c3e50;
+            font-size: 22px;
+        }
+
+        .table-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-small {
+            padding: 8px 15px;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .btn-export {
+            background: #28a745;
+            color: white;
+            border: none;
+        }
+
+        .btn-refresh {
+            background: #17a2b8;
+            color: white;
+            border: none;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: #f8f9fa;
+        }
+
+        th {
+            padding: 15px;
+            text-align: left;
+            color: #2c3e50;
+            font-weight: 600;
+            border-bottom: 2px solid #eee;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            color: #555;
+        }
+
+        .status-active {
+            background: #d4edda;
+            color: #155724;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-inactive {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-action {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .btn-view {
+            background: #17a2b8;
+            color: white;
+        }
+
+        .btn-edit {
+            background: #ffc107;
+            color: #212529;
+        }
+
+        .btn-delete {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-download {
+            background: #28a745;
+            color: white;
+        }
+
+        .no-data {
+            text-align: center;
+            color: #999;
+            font-style: italic;
+            padding: 40px !important;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-header {
+            padding: 25px 30px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h3 {
+            color: #2c3e50;
+            margin: 0;
+            font-size: 22px;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .modal-body {
+            padding: 30px;
+        }
+
+        .modal-footer {
+            padding: 20px 30px;
+            border-top: 1px solid #eee;
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            flex: 1;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 500;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .historial-container {
+            margin-top: 30px;
+        }
+
+        .historial-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border-left: 4px solid #667eea;
+        }
+
+        .historial-date {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        .historial-info {
+            display: flex;
+            justify-content: space-between;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .historial-tipo {
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .tipo-puntual {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .tipo-tarde {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 30px;
+        }
+
+        .page-btn {
+            padding: 8px 15px;
+            border: 1px solid #ddd;
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .page-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .huella-section {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f0f5ff;
+            border-radius: 10px;
+            border: 2px dashed #667eea;
+        }
+
+        .huella-section h4 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+
+        .btn-capturar {
+            background: #28a745;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .huella-preview {
+            text-align: center;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+
+        .huella-preview i {
+            font-size: 48px;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .estudiantes-container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                height: auto;
+            }
+            
+            .form-row {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="estudiantes-container">
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <img src="images/escudo.png" alt="Escudo" class="sidebar-logo">
+                <h2>Institución Educativa Nuestra Señora de Chiquinquirá</h2>
+                <p>Control de Asistencia</p>
+                <p>Llegadas tarde</p>
+            </div>
+            
+            <nav class="sidebar-menu">
+                <a href="dashboard.html">
+                    <i class="fas fa-tachometer-alt"></i> Dashboard
+                </a>
+                <a href="estudiante.html" class="active">
+                    <i class="fas fa-users"></i> Estudiantes
+                </a>
+                <a href="historial.html">
+                    <i class="fas fa-history"></i> Historial
+                </a>
+                <a href="reportes.html">
+                    <i class="fas fa-chart-bar"></i> Reportes
+                </a>
+                <a href="configuracion.html">
+                    <i class="fas fa-cog"></i> Configuración
+                </a>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <div class="admin-info">
+                    <p style="font-size: 12px; margin-bottom: 10px;" id="adminInfo"></p>
+                </div>
+                <button class="btn-logout" onclick="cerrarSesion()">
+                    <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+                </button>
+            </div>
+        </div>
+        
+        <div class="main-content">
+            <div class="header-bar">
+                <div class="header-title">
+                    <h1>Gestión de Estudiantes</h1>
+                    <p id="adminName">Cargando...</p>
+                </div>
+                <div class="header-actions">
+                    <button class="btn-secondary" onclick="window.location.href='dashboard.html'">
+                        <i class="fas fa-arrow-left"></i> Volver
+                    </button>
+                    <button class="btn-primary" onclick="abrirModalNuevo()">
+                        <i class="fas fa-user-plus"></i> Nuevo Estudiante
+                    </button>
+                </div>
+            </div>
+            
+            <div class="search-filter">
+                <h2>Buscar y Filtrar</h2>
+                <div class="filter-controls">
+                    <div class="filter-group">
+                        <label for="searchNombre">Nombre del Estudiante</label>
+                        <input type="text" id="searchNombre" class="search-input" placeholder="Buscar por nombre..." onkeyup="filtrarEstudiantes()">
+                    </div>
+                    <div class="filter-group">
+                        <label for="filterGrado">Grado</label>
+                        <select id="filterGrado" class="select-input" onchange="filtrarEstudiantes()">
+                            <option value="">Todos los grados</option>
+                            <option value="6-1">6-1</option>
+                            <option value="6-2">6-2</option>
+                            <option value="6-3">6-3</option>
+                            <option value="6-4">6-4</option>
+                            <option value="6-5">6-5</option>
+                            <option value="7-1">7-1</option>
+                            <option value="7-2">7-2</option>
+                            <option value="7-3">7-3</option>
+                            <option value="7-4">7-4</option>
+                            <option value="7-5">7-5</option>
+                             <option value="8-1">8-1</option>
+                            <option value="8-2">8-2</option>
+                            <option value="8-3">8-3</option>
+                            <option value="8-4">8-4</option>
+                            <option value="8-5">8-5</option>
+                            <option value="9-1">9-1</option>
+                            <option value="9-2">9-2</option>
+                            <option value="9-3">9-3</option>
+                            <option value="9-4">9-4</option>
+                            <option value="10-1">10-1</option>
+                            <option value="10-2">10-2</option>
+                            <option value="10-3">10-3</option>
+                            <option value="10-4">10-4</option>
+                            <option value="11-1">11-1</option>
+                            <option value="11-2">11-2</option>
+                            <option value="11-3">11-3</option>
+                            <option value="11-4">11-4</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="filterEstado">Estado</label>
+                        <select id="filterEstado" class="select-input" onchange="filtrarEstudiantes()">
+                            <option value="">Todos</option>
+                            <option value="activo">Activo</option>
+                            <option value="inactivo">Inactivo</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="estudiantes-table-container">
+                <div class="table-header">
+                    <h2>Lista de Estudiantes</h2>
+                    <div class="table-actions">
+                        <button class="btn-small btn-refresh" onclick="cargarEstudiantes()">
+                            <i class="fas fa-sync-alt"></i> Actualizar
+                        </button>
+                        <button class="btn-small btn-export" onclick="exportarExcel()">
+                            <i class="fas fa-file-excel"></i> Exportar Excel
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="table-container">
+                    <table id="tablaEstudiantes">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nombre Completo</th>
+                                <th>Grado</th>
+                                <th>Código</th>
+                                <th>Estado</th>
+                                <th>Huella</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tablaEstudiantesBody">
+                            <tr>
+                                <td colspan="7" class="no-data">Cargando estudiantes...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="pagination" id="pagination">
+                    <!-- La paginación se generará dinámicamente -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para nuevo/editar estudiante -->
+    <div class="modal" id="modalEstudiante">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Nuevo Estudiante</h3>
+                <button class="modal-close" onclick="cerrarModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="formEstudiante">
+                    <input type="hidden" id="estudianteId">
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="nombreCompleto">Nombre Completo *</label>
+                            <input type="text" id="nombreCompleto" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="grado">Grado *</label>
+                            <select id="grado" class="form-control" required>
+                                <option value="">Seleccionar grado</option>
+                                <option value="6-1">6-1</option>
+                                <option value="6-2">6-2</option>
+                                <option value="6-3">6-3</option>
+                                <option value="6-4">6-4</option>
+                                <option value="6-5">6-5</option>
+                                <option value="7-1">7-1</option>
+                                <option value="7-2">7-2</option>
+                                <option value="7-3">7-3</option>
+                                <option value="7-4">7-4</option>
+                                <option value="7-5">7-5</option>
+                                <option value="8-1">8-1</option>
+                                <option value="8-2">8-2</option>
+                                <option value="8-3">8-3</option>
+                                <option value="8-4">8-4</option>
+                                <option value="8-5">8-5</option>
+                                <option value="9-1">9-1</option>
+                                <option value="9-2">9-2</option>
+                                <option value="9-3">9-3</option>
+                                <option value="9-4">9-4</option>
+                                <option value="10-1">10-1</option>
+                                <option value="10-2">10-2</option>
+                                <option value="10-3">10-3</option>
+                                <option value="10-4">10-4</option>
+                                <option value="11-1">11-1</option>
+                                <option value="11-2">11-2</option>
+                                <option value="11-3">11-3</option>
+                                <option value="11-4">11-4</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="codigoEstudiante">Código del Estudiante *</label>
+                            <input type="text" id="codigoEstudiante" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="estado">Estado</label>
+                            <select id="estado" class="form-control">
+                                <option value="true">Activo</option>
+                                <option value="false">Inactivo</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="huella-section" id="huellaSection">
+                        <h4>Huella y sensor AS608</h4>
+                        <p id="huellaFlujoGuia" style="font-size: 13px; color: #0c5460; background: #d1ecf1; border-radius: 6px; padding: 10px 12px; margin: 0 0 12px 0;">
+                            <strong>Importante:</strong> aquí no se “escanea” el dedo. Complete los datos y pulse <strong>Guardar</strong>; luego use el Arduino con <code>enroll_as608.ino</code> y el <strong>mismo ID</strong> que muestra el sistema.
+                        </p>
+                        <button type="button" class="btn-capturar" onclick="instruccionesSensorHuella()">
+                            <i class="fas fa-info-circle"></i> Ver pasos con el Arduino
+                        </button>
+                        <button type="button" class="btn-secondary" style="margin-left:8px;" id="btnReferenciaHuella" onclick="aplicarReferenciaInternaHuella()">
+                            <i class="fas fa-link"></i> Referencia en base de datos
+                        </button>
+                        <div class="huella-preview" id="huellaPreview">
+                            <i class="fas fa-fingerprint" style="color: #6c757d;"></i>
+                            <p id="huellaPreviewTexto">Estado: pendiente de guardar</p>
+                        </div>
+                        <input type="hidden" id="huellaDactilar">
+                        <p style="font-size: 12px; color: #666; margin-top: 10px;">
+                            El navegador <strong>no</strong> puede leer el AS608. La plantilla biométrica solo se graba en el sensor con el sketch <code>enroll_as608.ino</code>.
+                        </p>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="cerrarModal()">Cancelar</button>
+                <button class="btn-primary" onclick="guardarEstudiante()">Guardar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para ver historial -->
+    <div class="modal" id="modalHistorial">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="historialTitle">Historial de Asistencia</h3>
+                <button class="modal-close" onclick="cerrarModalHistorial()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="historialInfo"></div>
+                <div class="historial-container" id="historialContainer">
+                    <!-- El historial se cargará aquí -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="cerrarModalHistorial()">Cerrar</button>
+                <button class="btn-primary" onclick="generarPDFHistorial()">
+                    <i class="fas fa-file-pdf"></i> Descargar PDF
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/estudiante.js?v=20260426c"></script>
+</body>
+</html>

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configuración - Control de Asistencia</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .config-card { background:#fff; border-radius:14px; padding:24px; box-shadow:0 3px 10px rgba(0,0,0,.08); margin-bottom:20px; }
+        .config-card h2 { color:#2c3e50; margin-bottom:14px; }
+        .config-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(240px,1fr)); gap:14px; }
+        .config-field label { display:block; font-weight:600; color:#2c3e50; margin-bottom:6px; }
+        .config-field input, .config-field select { width:100%; padding:10px; border-radius:8px; border:1px solid #ccc; }
+        .helper { color:#666; font-size:13px; margin-top:8px; }
+        .btn-save { background:linear-gradient(135deg,#667eea 0%,#764ba2 100%); color:#fff; border:none; border-radius:8px; padding:10px 14px; cursor:pointer; }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <img src="images/escudo.png" alt="Escudo" class="sidebar-logo">
+                <h2>Institución Educativa Nuestra Señora de Chiquinquirá</h2>
+                <p>Control de Asistencia</p>
+                <p>Llegadas tarde</p>
+            </div>
+            <nav class="sidebar-menu">
+                <a href="dashboard.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+                <a href="estudiante.html"><i class="fas fa-users"></i> Estudiantes</a>
+                <a href="historial.html"><i class="fas fa-history"></i> Historial</a>
+                <a href="reportes.html"><i class="fas fa-chart-bar"></i> Reportes</a>
+                <a href="configuracion.html" class="active"><i class="fas fa-cog"></i> Configuración</a>
+            </nav>
+            <div class="sidebar-footer">
+                <button class="btn-logout" onclick="cerrarSesion()">
+                    <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+                </button>
+            </div>
+        </div>
+        <div class="main-content">
+            <header class="main-header">
+                <div class="header-left">
+                    <h1>Configuración general</h1>
+                    <p>Parámetros de visualización del sistema</p>
+                </div>
+            </header>
+
+            <div class="config-card">
+                <h2>Ajustes del sistema</h2>
+                <div class="config-grid">
+                    <div class="config-field">
+                        <label for="nombreProyecto">Nombre del proyecto</label>
+                        <input id="nombreProyecto" type="text" value="NI UNA LLEGADA TARDE MÁS">
+                    </div>
+                    <div class="config-field">
+                        <label for="apiVersion">Versión de la API</label>
+                        <input id="apiVersion" type="text" value="v1">
+                    </div>
+                    <div class="config-field">
+                        <label for="entorno">Entorno</label>
+                        <select id="entorno">
+                            <option value="desarrollo">Desarrollo</option>
+                            <option value="pruebas">Pruebas</option>
+                            <option value="produccion">Producción</option>
+                        </select>
+                    </div>
+                    <div class="config-field">
+                        <label for="idioma">Idioma por defecto</label>
+                        <select id="idioma">
+                            <option value="es">Español</option>
+                            <option value="en">English</option>
+                            <option value="pt">Português</option>
+                        </select>
+                    </div>
+                    <div class="config-field">
+                        <label for="zonaHoraria">Zona horaria</label>
+                        <select id="zonaHoraria">
+                            <option value="America/Bogota">America/Bogota</option>
+                            <option value="America/Lima">America/Lima</option>
+                            <option value="America/Mexico_City">America/Mexico_City</option>
+                            <option value="UTC">UTC</option>
+                        </select>
+                    </div>
+                </div>
+                <p class="helper">Estos ajustes se guardan en el navegador para operación del panel (no cambian automáticamente variables del backend).</p>
+                <button class="btn-save" id="btnGuardarConfig">
+                    <i class="fas fa-save"></i> Guardar configuración
+                </button>
+            </div>
+        </div>
+    </div>
+    <script src="js/configuracion.js?v=20260426c"></script>
+</body>
+</html>
